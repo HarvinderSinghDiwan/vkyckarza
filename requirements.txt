@@ -1,0 +1,4 @@
+boto3==1.26.78
+botocore==1.29.78
+fastapi==0.92.0
+fastapi_log==0.0.3

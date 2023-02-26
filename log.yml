@@ -1,0 +1,29 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    "()": uvicorn.logging.DefaultFormatter
+    format: logname::%(name)s logtime::%(asctime)s timestamp::%(created)f level::%(levelname)s MODULE::%(lineno)d FILENAME::%(filename)s PROCESS_NAME::%(processName)s PROCESS_ID::%(process)d THREAD_NAME::%(threadName)s THREAD_ID::%(thread)d LINE_NO::%(lineno)d message::%(message)s
+  access:
+    "()": uvicorn.logging.AccessFormatter
+    format: logname::%(name)s logtime::%(asctime)s timestamp::%(created)f level::%(levelname)s MODULE::%(lineno)d FILENAME::%(filename)s PROCESS_NAME::%(processName)s PROCESS_ID::%(process)d THREAD_NAME::%(threadName)s THREAD_ID::%(thread)d LINE_NO::%(lineno)d message::%(message)s
+handlers:
+  default:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stderr
+  access:
+    formatter: access
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+loggers:
+  uvicorn.error:
+    level: INFO
+    handlers:
+      - default
+    propagate: no
+  uvicorn.access:
+    level: INFO
+    handlers:
+      - access
+    propagate: no
