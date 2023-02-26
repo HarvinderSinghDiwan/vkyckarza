@@ -25,8 +25,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.router.route_class = LoggingRoute
-@app.get("/vkyc/{video_id}/{video_name}")
-async def getPresigned(video_id,video_name):
+@app.get("/getsigned")
+async def getPresigned(bn,key,ex):
   my_session = boto3.session.Session()
   my_config = Config(
       region_name = REGION,
@@ -43,18 +43,14 @@ async def getPresigned(video_id,video_name):
                         endpoint_url='https://s3.ap-south-1.amazonaws.com'
                         )
   try:
-    print("vkyc"+video_id+"/"+video_name)
     url = s3.generate_presigned_url(
           ClientMethod='get_object',
           Params={
-              'Bucket': BUCKET_NAME,
-              'Key': "vkyc/"+video_id+"/"+video_name
-          },ExpiresIn=EXPIRY
+              'Bucket': bn,
+              'Key': key
+          },ExpiresIn=ex
     )
     return url
   except Exception as e:
-    print("\n\n")
-    print(e)
-    print("\n\n")
-    logging.error("VIDEO_ID::{},VIDEO_NAME::{}".format(video_id,video_name),exc_info=False)
-    return "FailedToGenerateUrl"
+    logging.error(e,"VIDEO_ID::{},VIDEO_NAME::{}".format(key.split("/")[1],key.split("/")[2]),exc_info=True)
+    return {"status":"FailedToGenerateUrl"}
