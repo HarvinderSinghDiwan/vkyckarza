@@ -25,6 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.router.route_class = LoggingRoute
+@app.get("/healthcheck")
+def healthcheck():
+  return "Healthy"
 @app.get("/getsigned")
 async def getPresigned(bn,key,ex):
   my_session = boto3.session.Session()
